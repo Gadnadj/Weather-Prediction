@@ -16,6 +16,7 @@ from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
 
 pd.options.display.max_columns = None
 pd.options.display.max_rows = None
@@ -39,9 +40,7 @@ sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
-classifier = DecisionTreeClassifier(criterion='entropy', random_state=0)
-Decision_tree = classifier.fit(X_train, y_train)
-y_pred = classifier.predict(X_test)
+
 
 
 def get_test_report(model):
@@ -70,10 +69,30 @@ def plot_confusion_matrix(model):
 score_card = pd.DataFrame(columns=['Model', 'Precision Score', 'Recall Score',
                                    'Accuracy Score', 'Kappa Score', 'f1-score'])
 
+classifier = DecisionTreeClassifier(criterion='entropy', random_state=0)
+Decision_tree = classifier.fit(X_train, y_train)
+y_pred = classifier.predict(X_test)
+
+
 print(get_test_report(Decision_tree))
 acc5 = accuracy_score(y_test, y_pred)
 plot_confusion_matrix(Decision_tree)
 print(f"Accuracy score: {acc5}")
+
+
+classifier = SVC(kernel = 'linear', random_state = 0)
+SVC=classifier.fit(X_train, y_train)
+y_pred = classifier.predict(X_test)
+
+
+acc6 = accuracy_score(y_test, y_pred)
+plot_confusion_matrix(SVC)
+print(get_test_report(SVC))
+print(f"Accuracy score: {acc6}")
+
+
+
+
 
 from sklearn.tree import export_graphviz
 from sklearn.tree import plot_tree
@@ -84,6 +103,5 @@ export_graphviz(Decision_tree, out_file='tree.dot', feature_names=list(x.columns
 # Affiche l'arbre de décision
 fig = plt.figure(figsize=(150, 90), dpi= 210)
 plot_tree(Decision_tree, feature_names=list(x.columns), class_names=list(y.unique()))
-fig.savefig("decisonee_tree.png")
-
+fig.savefig("decison_tree.png")
 
